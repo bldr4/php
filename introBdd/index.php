@@ -1,8 +1,13 @@
 <?php
 require 'bd.php';
-
+session_start();
 // récupérer le param de l'url pour les sous categs 
 $categId = isset($_GET['subCategId']) ? $_GET['subCategId'] : null;
+
+// récupérer l'utilisateur connecté en utilisant une ternaire 
+// $userCo = isset($_SESSION['user_nom']) ? $_SESSION['user_nom'] : null;
+// Equivalent à la ternaire ci-dessus -> opérateur de coalescence null
+$userCo =  $_SESSION['user_nom']  ?? null;
 $db = Database::connect();
 
 // récupérer les categs mère 
@@ -41,6 +46,9 @@ Database::disconnect();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <!-- Option 1: Include in HTML -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
 </head>
 
 <body>
@@ -77,11 +85,51 @@ Database::disconnect();
                         </ul>
                     </li>
                 <?php } ?>
+                </ul>
+                <ul class='navbar-nav'>
+                    <!-- Admin -->
+                <?php if(isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'){ ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="inscription.php">Back-office</a>
+                    </li>
+
+            <?php 
+                } 
+                if(isset($_SESSION['user_id']) && isset($_SESSION['user_nom'])){  
+            ?>
+                    <!-- User connecté -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle"></i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <p>Bonjour <?= $userCo ?></p>
+                                <a class="dropdown-item" href="#">Profil</a>
+                                <a class="dropdown-item" href="#">Commandes</a>
+                                <a class="dropdown-item" href="deconnexion.php">Déconnexion</a>
+                            </li>
+                        </ul>
+                    </li>
+            <?php
+                }
+                else
+                { 
+            ?>
+
+                       <!-- user non connecté -->
                     <li class="nav-item">
                         <a class="nav-link" href="inscription.php">Inscription</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="connexion.php">Connexion</a>
+                    </li>
+         <?php
+                }
+            ?>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="connexion.php"> <i class="bi bi-cart"></i></a>
                     </li>
                 </ul>
             </div>

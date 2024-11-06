@@ -33,6 +33,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
             // on stocke les infos de l'utilisateur dans la session (l'utilisateur est connecté)
             session_start();
             $_SESSION['user_id'] = $user['id'];
+            $_SESSION['user_nom'] = $user['nom'];
             $_SESSION['user_role'] = $user['role'];
             header('Location: index.php');
         }else{
